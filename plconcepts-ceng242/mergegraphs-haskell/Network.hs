@@ -1,4 +1,4 @@
-module network where
+module Network where
 
 
 data Node a = Node {
