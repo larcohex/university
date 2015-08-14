@@ -81,7 +81,7 @@ double maxFlow (vector <vector <int> > &graph, vector <vector <double> > &capaci
 int main()
 {
 	ifstream input;
-	input.open ("hw4.inp");
+	input.open ("maxflow.inp");
 	ofstream output;
 	if (input.is_open())
 	{
@@ -187,7 +187,7 @@ int main()
 			}
 		}
 		ofstream output;
-		output.open ("hw4.out");
+		output.open ("maxflow.out");
 		for (int i = 0; i < M; ++i)
 		{
 			output << order[i].first << " " << order[i].second << " " << abs (flows[order[i].first][order[i].second]) << endl;
