@@ -1,0 +1,59 @@
+17 37 4
+A
+B
+C
+D
+E
+F
+G
+H
+I
+i
+J
+K
+L
+M
+N
+O
+P
+A B 1
+A C 1
+A D 1
+A E 2
+B C 2
+B F 1
+B G 3
+C F 2
+D E 2
+D H 1
+E C 1
+E I 1
+E H 2
+C i 2
+C J 3
+F J 1
+F G 1
+G K 1
+G J 2
+H I 2
+H M 3
+H L 1
+I i 3
+I N 2
+I M 1
+i N 2
+i O 1
+i J 3
+J K 3
+J P 9
+J O 2
+K P 1
+L M 1
+M N 1
+N O 2
+O P 1
+E i 2
+B D
+A I
+J H
+P F
