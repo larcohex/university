@@ -1,8 +1,8 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
-#include "Node.h"
-#include "Exceptions.h"
+#include "node.h"
+#include "exceptions.h"
 
 class Network
 {
