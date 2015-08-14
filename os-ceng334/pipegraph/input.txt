@@ -1,0 +1,49 @@
+1. Deterministic
+Input:
+2 
+echo test one two three : 1
+cat:
+
+Output:
+test one two three
+
+2. Nondeterministic
+Input:
+4
+cat :
+echo number of items : 0
+ls / : 3
+wc -w : 0
+
+Output:
+number of items
+      21
+      
+3. Nondeterministic
+Input:
+4   
+echo 12 : 1 2
+./inc : 
+./inc : 3
+./inc : 
+
+Output:
+13
+14
+      
+4. Nondeterministic
+Input:
+8 
+echo 5 : 1 2 3
+./inc : 7
+./inc : 4
+./inc : 5
+./inc : 7
+./inc : 6
+./inc : 7
+cat : 
+
+Output:
+7
+8
+6
