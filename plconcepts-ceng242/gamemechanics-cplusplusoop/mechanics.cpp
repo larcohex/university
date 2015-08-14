@@ -1,4 +1,4 @@
-#include "hw5.h"
+#include "mechanics.h"
 #include <iostream>
 
 using namespace std;
