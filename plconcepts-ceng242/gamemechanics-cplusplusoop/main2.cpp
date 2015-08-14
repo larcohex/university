@@ -5,7 +5,7 @@
  *      Author: Muhammet Kara
  */
 
-#include "hw5.h"
+#include "mechanics.h"
 #include <iostream>
 #include <vector>
 #include <ctime>
