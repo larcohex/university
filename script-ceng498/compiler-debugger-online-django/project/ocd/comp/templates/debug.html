@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	{% load static  from staticfiles %}
+	<link href = {% static "styles/debug_style.css" %} type = "text/css" rel = "stylesheet" />
+		<title>OCD</title>
+	</head>
+	<body>
+		<div id = "left-column-div">
+			<div id = "compile-div">
+				<label>Your code</label><br>
+				<textarea class = "immutable" rows = "15" cols = "70" name = "code" readonly>{{ code }}</textarea><br>
+				<label>Your input</label><br>
+				<textarea class = "immutable" rows = "15" cols = "70" name = "code" readonly>{{ inp }}</textarea><br>
+			</div>
+		</div>
+		<div id = "right-column-div">
+			<div id = "escape-div">
+				<form action = "/comp_debug/" method = "post">
+					{% csrf_token %}
+					<label>GDB</label><br>
+					<input type = "text" size = "50" name = "command" placeholder = "Your command" autocomplete = "off" autofocus></br>
+					<button class = "subm-button" name = "do" type = "submit">Do</button>
+				</form>
+				{% if response %}
+				<br><br>
+				<textarea class = "immutable" rows = "15" cols = "50" name = "output" readonly>{{ response }}</textarea>
+				{% endif %}
+				{% if no_command_error %}
+				<br><br>
+				<textarea class = "immutable" rows = "15" cols = "50" name = "output" readonly>Please enter command</textarea>
+				{% endif %}
+				<br><br><br>
+				<form action = "/comp_old/" method = "post">
+					{% csrf_token %}
+					<p>Or</p><button id = "signup_button" class = "subm-button" name = "finish" type = "submit">Finish</button>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

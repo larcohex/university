@@ -41,3 +41,4 @@ extern PFNGLGETSHADERIVPROC glGetShaderiv;
 int init_glentry();
 
 #endif // __glentry_h__
+

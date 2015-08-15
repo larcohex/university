@@ -1635,3 +1635,4 @@ bool TiXmlText::Blank() const
 			return false;
 	return true;
 }
+

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% load static  from staticfiles %}
+		<link href = {% static "styles/signup_style.css" %} type = "text/css" rel = "stylesheet" />
+		<title>OCD</title>
+	</head>
+
+	<body>
+		<div id = "signup-container">
+			<div id = "signup">
+				<form id = "signup-form" name = "SignUp" action = "/comp_signup/" method = "post">
+					{% csrf_token %}
+					<input class = "input-box" type = "text" id = "username" name = "username" placeholder = "Username" value = {{ username }}><br><br>
+					<input class = "input-box" type = "password" id = "password" name = "password" placeholder = "Password"><br><br>
+					<input class = "input-box" type = "password" id = "confirm-password" name = "confirm-password" placeholder = "Confirm password"><br><br><br>
+					<button class = "subm-button" name = "create" type = "submit">Sign up</button>
+				</form>
+				<br><br><br>
+				<form id = "login-button" name = "Login" action = "/comp_login/" method = "post">
+					{% csrf_token %}
+					<p>Or</p><button class = "subm-button" id = "signup_button" name = "back" type = "submit">Login</button>
+				</form>
+				{% if password_error %}
+					<p>Your passwords didn't match, please try again</p>
+				{% endif %}
+				{% if empty_username_error %}
+					<p>Please enter username</p>
+				{% endif %}
+				{% if empty_password_error %}
+					<p>Please enter password</p>
+				{% endif %}
+				{% if user_exists_error %}
+					<p>User already exists</p>
+				{% endif %}
+			</div>
+		</div>
+	</body>
+</html>

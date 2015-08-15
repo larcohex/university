@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% load static  from staticfiles %}
+		<link href = {% static "styles/login_style.css" %} type = "text/css" rel = "stylesheet" />
+		<title>OCD</title>
+	</head>
+
+	<body>
+		<div id = "login-container">
+			<div id = "login">
+				<form id = "login-form" name = "Login" action = "/comp_login/" method = "post">
+					{% csrf_token %}
+					<input class = "input-box" type = "text" id = "username" name = "username" placeholder = "Username" value = {{ username }}><br><br>
+					<input class = "input-box" type = "password" id = "password" name = "password" placeholder = "Password"><br><br>
+					<button class = "subm-button" name = "login" type = "submit">Login</button>
+				</form>
+				<br><br>
+				<form id = "signup-button" name = "SignUp" action = "/comp_signup/" method = "post">
+					{% csrf_token %}
+					<p>Or</p><button class = "subm-button" id = "signup_button" name = "signup" type = "submit">Sign up</button>
+				</form>
+				{% if login_error %}
+					<p>Your username and password didn't match, please try again</p>
+				{% endif %}
+				{% if no_login_error %}
+					<p>Please enter username</p>
+				{% endif %}
+			</div>
+		</div>
+	</body>
+</html>

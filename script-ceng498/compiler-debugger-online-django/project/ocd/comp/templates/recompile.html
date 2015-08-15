@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		{% load static  from staticfiles %}
+		<link href = {% static "styles/recompile_style.css" %} type = "text/css" rel = "stylesheet" />
+		<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script src = {% static "scripts/jquery-linedtextarea.js" %}></script>	<!-- plugin itself -->
+		<script src = {% static "scripts/tabIndent.js" %}></script> <!-- plugin for inserting tab character when pressing tab -->
+		<title>OCD</title>
+	</head>
+	<body>
+		<div id = "left-column-div">
+			<div id = "compile-div">
+				<form id = "compile" name = "Compile" action = "/comp_old/" method = "post">
+					{% csrf_token %}
+					<label for = "c">C</label>
+					<input type = "radio" name = "language" value = "c" {% if language == "c" %}checked{% endif %}></br>
+					<label for = "c++">C++</label>
+					<input type = "radio" name = "language" value = "c++" {% if language == "c++" %}checked{% endif %}></br>
+
+					<label>Source Code:</label></br>
+					<!-- this text area is where i try to highlight (id = "code") -->
+					<textarea rows = "15" cols = "70" class = "lined" id = "code" name = "code" placeholder = "Your code">{{ code }}</textarea></br></br>
+					<!-- ........................................................ -->
+					<label>Input File:</label></br>
+					<textarea rows = "15" cols = "70" class = "lined" name = "inp" placeholder = "Your input (if needed)">{{ inp }}</textarea></br>
+					<label>Flags:</label></br>
+					<input type = "text" size = "50" name = "flags" placeholder = "Flags for compiler (if needed)" value = {{ flags }}></br>
+					<button id = "compile-button" class = "subm-button" name = "recompile" type = "submit" style = "float: left">Recompile</button>
+					{% if run_access %}
+					<button id = "compile-button" class = "subm-button" name = "run" type = "submit" style = "float: left">Run</button>
+					{% endif %}<p style = "float: left;margin: 0px 5px 0px 5px"> or </p>
+					<input type = "button" class = "subm-button" id = "open-file" name = "open-file" value = "Open file" style = "float: left"><input type = "file" id = "code_file"><br><br>
+					<script>
+						function readSingleFile(e) {
+							var file = e.target.files[0];
+							if (!file) {
+								return;
+							}
+							var reader = new FileReader();
+							reader.onload = function(e) {
+								var contents = e.target.result;
+								displayContents(contents);
+							};
+							reader.readAsText(file);
+						}
+
+						function displayContents(contents) {
+							var element = document.getElementById('code');
+							element.innerHTML = contents;
+						}
+
+						var button = document.getElementById ("open-file");
+						if (button)
+						{
+							button.onclick = function()
+							{
+								var element = document.getElementById ("code_file");
+								if (element)
+								{
+									element.addEventListener ("change", readSingleFile, false);
+									element.click();
+								}
+							}
+						}
+					</script>
+				</form>
+				{% if no_language_error %}
+				<p>Please select language</p>
+				{% endif %}
+				{% if no_code_error %}
+				<p>Please write code</p>
+				{% endif %}
+			</div>
+		</div>
+		<script>
+			tabIndent.renderAll();
+		</script>
+		<script>
+		$(function() {
+			$(".lined").linedtextarea(
+				{selectedClass: 'lineselect'}
+			);
+		});
+		</script>
+		<div id = "right-column-div">
+			<div id = "escape-div">
+				{% if response %}
+				<textarea id = "output-text" rows = "15" cols = "60" name = "response" readonly = "">{{ response }}</textarea>
+				{% if debug_access %}
+				<form id = "debug" name = "DebugButton" action = "/comp_debug/" method = "post">
+					{% csrf_token %}
+					<button name = "debug" type = "submit">Debug</button>
+				</form>
+				{% endif %}
+				<script>
+					/*my script where i try to highlight according to line numbers given by compiler errors*/
+					$(document).ready (function() {
+						var errText = document.getElementById ("output-text");
+						if (errText != null)
+						{
+							var reset = document.getElementsByClassName ("lineno lineselect");
+							for (var i = 0; i < reset.length; ++i)
+							{
+								reset[i].className = "lineno";
+							}
+							var errors = errText.innerHTML;
+							var indices = [];
+							var pos = 0;
+							var next = -1;
+							while (pos != -1) {
+								pos = errors.indexOf ("Position", next + 1);
+								if (pos != -1)
+								{
+									indices.push (pos);
+								}
+								next = pos;
+							}
+							var nlines = [];
+							for (var i = 0; i < indices.length; ++i)
+							{
+								var index = indices[i];
+								for (var j = indices[i]; errors.charAt (j) != ":"; ++j)
+								{
+									++index;
+								}
+								index += 2;
+								var nline = "";
+								for (var j = index; errors.charAt (j) != "/"; ++j)
+								{
+									nline += errors.charAt (j);
+								}
+								nlines.push (nline);
+							}
+							/* nlines is an array of number lines, i try to highlight here by assigning lineselect class */
+							for (var i = 0; i < nlines.length; ++i)
+							{
+								var obj = document.getElementById ("code");
+								if (obj)
+								{
+									obj.scrollTop = 99999; /* tried to scroll to bottom before highlighting */
+									var temp = document.getElementById (nlines[i]); /* doesn't see elements below 16 lines */
+									if (temp)
+									{
+										console.log (temp);
+										if (obj)
+										{
+											temp.className = "lineno lineselect";
+										}
+									}
+								}
+							}
+						}
+					});
+				</script>
+				{% endif %}
+				{% if no_language_error %}
+				<p>Please select language</p>
+				{% endif %}
+				{% if no_code_error %}
+				<p>Please write code</p>
+				{% endif %}
+				<form id = "return-to-files" name = "ReturnToFiles" action = "/comp_files/" method = "post">
+					{% csrf_token %}
+					<button class = "subm-button" id = "return" name = "return" type = "submit">Return to files</button>
+				</form>
+				<br><br>
+				<form id = "logout-button" name = "LogoutButton" action = "/comp_logout/" method = "post">
+					{% csrf_token %}
+					<p>Or</p><button id = "signup_button" class = "subm-button" name = "logout" type = "submit">Logout</button>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

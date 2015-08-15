@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% load static  from staticfiles %}
+		<link href = {% static "styles/files_style.css" %} type = "text/css" rel = "stylesheet" />
+		<title>OCD</title>
+	</head>
+
+	<body>
+		<div id = "files-container">
+			<div id = "files">
+				<form id = "open-file" name = "OpenFile" action = "/comp_old/" method = "post">
+					{% csrf_token %}
+					{% if files %}
+						<div id = "files-div">
+						{% for i in files %}
+							<button id = "signup_button" class = "subm-button" name = {{i}} type = "submit">{{ i }}</button><br>
+						{% endfor %}
+						</div>
+					{% else %}
+						<p id = "no-files">You haven't created files yet</p>
+					{% endif %}
+				</form>
+				<form id = "create-file-button" name = "CreateFile" action = "/comp_new/" method = "post">
+					{% csrf_token %}
+					<button class = "subm-button" name = "new" type = "submit">New</button>
+				</form>
+				<br><br><br>
+				<form id = "logout-button" name = "LogoutButton" action = "/comp_logout/" method = "post">
+					{% csrf_token %}
+					<p>Or</p><button id = "signup_button" class = "subm-button" name = "logout" type = "submit">Logout</button>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

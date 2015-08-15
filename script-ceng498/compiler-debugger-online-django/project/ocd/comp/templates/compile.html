@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		{% load static  from staticfiles %}
+		<link href = {% static "styles/compile_style.css" %} type = "text/css" rel = "stylesheet" />
+		<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script src = {% static "scripts/jquery-linedtextarea.js" %}></script>
+		<script src = {% static "scripts/tabIndent.js" %}></script>
+		<title>OCD</title>
+	</head>
+	<body>
+		<div id = "left-column-div">
+			<div id = "compile-div">
+				<form id = "compile" name = "Compile" action = "/comp_new/" method = "post">
+					{% csrf_token %}
+					<label for = "c">C</label>
+					<input type = "radio" name = "language" value = "c"></br>
+					<label for = "c++">C++</label>
+					<input type = "radio" name = "language" value = "c++"></br>
+
+					<label>Source Code:</label></br>
+					<textarea rows = "15" class = "lined" cols = "70" id = "code" name = "code" placeholder = "Your code">{% if code %}{{ code }}{% endif %}</textarea></br>
+					<label>Input File:</label></br>
+					<textarea rows = "15" class = "lined" cols = "70" name = "inp" placeholder = "Your input (if needed)">{% if inp %}{{ inp }}{% endif %}</textarea></br>
+					<label>Flags:</label></br>
+					<input type = "text" size = "50" name = "flags" placeholder = "Flags for compiler (if needed)" {% if flags %}value = {{ flags }}{% endif %}></br><br>
+					<button class = "subm-button" id = "compile-button" name = "compile" type = "submit" style = "float: left">Compile</button><p style = "float: left;margin: 0px 5px 0px 5px"> or </p>
+					<input type = "button" class = "subm-button" id = "open-file" name = "open-file" value = "Open file" style = "float: left"><input type = "file" id = "code_file"><br><br>
+					<script>
+						function readSingleFile(e) {
+							var file = e.target.files[0];
+							if (!file) {
+								return;
+							}
+							var reader = new FileReader();
+							reader.onload = function(e) {
+								var contents = e.target.result;
+								displayContents(contents);
+							};
+							reader.readAsText(file);
+						}
+
+						function displayContents(contents) {
+							var element = document.getElementById('code');
+							element.innerHTML = contents;
+						}
+
+						var button = document.getElementById ("open-file");
+						if (button)
+						{
+							button.onclick = function()
+							{
+								var element = document.getElementById ("code_file");
+								if (element)
+								{
+									element.addEventListener ("change", readSingleFile, false);
+									element.click();
+								}
+							}
+						}
+					</script>
+				</form>
+			</div>
+		</div>
+		<div id = "right-column-div">
+			<div id = "escape-div">
+				{% if no_language_error %}
+				<p>Please select language</p>
+				{% endif %}
+				{% if no_code_error %}
+				<p>Please write code</p>
+				{% endif %}
+				<form id = "return-to-files" name = "ReturnToFiles" action = "/comp_files/" method = "post">
+					{% csrf_token %}
+					<button class = "subm-button" id = "return" name = "return" type = "submit">Return to files</button>
+				</form>
+				<br><br>
+				<form id = "logout-button" name = "LogoutButton" action = "/comp_logout/" method = "post">
+					{% csrf_token %}
+					<p>Or</p><button id = "signup_button" class = "subm-button" name = "logout" type = "submit">Logout</button>
+				</form>
+			</div>
+		</div>
+		<script>
+			tabIndent.renderAll();
+		</script>
+		<script>
+		$(function() {
+			$(".lined").linedtextarea(
+				{}
+			);
+		});
+		</script>
+	</body>
+</html>
