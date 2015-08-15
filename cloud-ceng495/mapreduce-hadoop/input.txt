@@ -1,0 +1,10 @@
+dad love	1
+dad mother	1
+draw family	1
+draw tree	1
+family love	1
+family mother	1
+family tree	3
+love mother	2
+love tree	1
+mother tree	1
