@@ -15,19 +15,22 @@
 			}
 			else
 			{
-				$stid = oci_parse ($conn, "begin ceng352.login (:userid, :email, :output, :result); end;"
+				$stid = oci_parse ($conn, "begin ceng352.login (:userid, :email, :result); end;");
 				oci_bind_by_name ($stid, ":userid", $_POST["userid"]);
 				oci_bind_by_name ($stid, ":email", $_POST["email"]);
 				oci_bind_by_name ($stid, ":result", $result);
 				oci_execute ($stid);
-				if ($result == "T")
+				if (strcmp (substr ($result, 0, 1), "T") == 0)
 				{
 					$_SESSION["userid"] = $_POST["userid"];
-					header ("location: list_books.php");
+					$host  = $_SERVER['HTTP_HOST'];
+					$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+					$extra = 'list_books.php';
+					header ("Location: http://$host$uri/$extra");
 				}
 				else
 				{
-					$error = "Username or password is invalid";
+					$error = "Username or password is invalid ";
 				}
 				oci_free_statement ($stid);
 			}

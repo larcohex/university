@@ -37,27 +37,35 @@
 				else
 				{
 					$curs = oci_new_cursor ($conn);
-					$stid = oci_parse ($conn, "begin ceng352.search_books (:title, :books); end;"
+					$stid = oci_parse ($conn, "begin ceng352.search_books (:title, :books); end;");
 					oci_bind_by_name ($stid, ":title", $_POST["title"]);
 					oci_bind_by_name ($stid, ":books", $curs, -1, OCI_B_CURSOR);
 					oci_execute ($stid);
 					oci_execute ($curs);
 					echo "<table border = '1'>";
 					echo "<tr>";
-					echo "<th>ISBN</th><th>Title</th><th>Pub.Year</th><th>Quantity</th><th>Borrow?</th>" 
+					echo "<th>ISBN</th><th>Title</th><th>Pub.Year</th><th>Quantity</th><th>Borrow?</th>";
 					echo "</tr>";
 					while ($row = oci_fetch_array ($curs))
 					{
+						$host  = $_SERVER['HTTP_HOST'];
+						$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+						$extra = 'borrow_book.php';
 						echo "<tr>";
-						echo "<td>" . $row["isbn"] . "</td><td>" . $row["title"] . "</td><td>" . $row["pubYear"] . "</td><td>" . $row["quantity"] . "</td><td><a href = '/borrow_book.php?isbn=" . $row["isbn"] . "'>Borrow</a></td>";
+						echo "<td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td><td>" . $row[3] . "</td><td><a href = 'http://$host$uri/$extra?isbn=" . $row[0] . "'>Borrow</a></td>";
 						echo "</tr>";
 					}
 					echo "</table>";
 				}
 			}
-			echo "<a href = 'search_by_years.php'>Search By Years</a>";
-			echo "<a href = 'list_books.php'>Back to your list</a>";
-			echo "<a href = 'logout.php'>Log Out</a>";
+			$host  = $_SERVER['HTTP_HOST'];
+			$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+			$extra1 = 'search_by_years.php';
+			$extra2 = 'list_books.php';
+			$extra3 = 'logout.php';
+			echo "<br><br><br><a href = 'http://$host$uri/$extra1'>Search By Years</a><br>";
+			echo "<a href = 'http://$host$uri/$extra2'>Back to your list</a><br>";
+			echo "<a href = 'http://$host$uri/$extra3'>Log Out</a>";
 			echo "</body>";
 			echo "</html>";
 		}
@@ -67,7 +75,10 @@
 	{
 		if (session_destroy())
 		{
-			header ("location: index.php");
+			$host  = $_SERVER['HTTP_HOST'];
+			$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+			$extra = 'index.php';
+			header ("Location: http://$host$uri/$extra");
 		}
 	}
 ?>

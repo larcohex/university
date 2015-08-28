@@ -8,7 +8,7 @@
 			echo "<!DOCTYPE HTML>";
 			echo "<html>";
 			echo "<head>";
-			echo "<title>Database Error</title>"
+			echo "<title>Database Error</title>";
 			echo "</head>";
 			echo "<body>";
 			echo "<span>Can't connect to database</span><br>";
@@ -18,12 +18,15 @@
 		}
 		else
 		{
-			$stid = oci_parse ($conn, "begin ceng352.return_book (:userid, :isbn, :issue_date); end;"
+			$stid = oci_parse ($conn, "begin ceng352.return_book (:userid, :isbn, to_date (:issueDate, 'DD/MM/YYYY HH24:MI:SS')); end;");
 			oci_bind_by_name ($stid, ":userid", $_SESSION["userid"]);
 			oci_bind_by_name ($stid, ":isbn", $_GET["isbn"]);
-			oci_bind_by_name ($stid, ":issue_date", $_GET["issueDate"]);
+			oci_bind_by_name ($stid, ":issueDate", $_GET["issueDate"]);
 			oci_execute ($stid);
-			header ("location: list_books.php");
+			$host  = $_SERVER['HTTP_HOST'];
+			$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+			$extra = 'list_books.php';
+			header ("Location: http://$host$uri/$extra");
 			oci_free_statement ($stid);
 			oci_free_statement ($curs);
 		}
@@ -33,7 +36,10 @@
 	{
 		if (session_destroy())
 		{
-			header ("location: index.php");
+			$host  = $_SERVER['HTTP_HOST'];
+			$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+			$extra = 'index.php';
+			header ("Location: http://$host$uri/$extra");
 		}
 	}
 ?>

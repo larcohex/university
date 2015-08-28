@@ -8,7 +8,7 @@
 			echo "<!DOCTYPE HTML>";
 			echo "<html>";
 			echo "<head>";
-			echo "<title>Database Error</title>"
+			echo "<title>Database Error</title>";
 			echo "</head>";
 			echo "<body>";
 			echo "<span>Can't connect to database</span><br>";
@@ -18,26 +18,33 @@
 		}
 		else
 		{
-			$stid = oci_parse ($conn, "begin ceng352.borrow_book (:userid, :isbn, :result); end;"
+			$stid = oci_parse ($conn, "begin ceng352.borrow_book (:userid, :isbn, :result); end;");
 			oci_bind_by_name ($stid, ":userid", $_SESSION["userid"]);
 			oci_bind_by_name ($stid, ":isbn", $_GET["isbn"]);
-			oci_bind_by_name ($stid, ":issue_date", $result);
+			oci_bind_by_name ($stid, ":result", $result);
 			oci_execute ($stid);
-			if ($result == "T"):
+			if (strcmp (substr ($result, 0, 1), "T") == 0)
 			{
-				header ("location: list_books.php");
+				$host  = $_SERVER['HTTP_HOST'];
+				$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+				$extra = 'list_books.php';
+				header ("Location: http://$host$uri/$extra");
 			}
 			else
 			{
 				echo "<!DOCTYPE HTML>";
 				echo "<html>";
 				echo "<head>";
-				echo "<title>Error</title>"
+				echo "<title>Error</title>";
 				echo "</head>";
 				echo "<body>";
 				echo "<span>Can't borrow this book</span><br>";
-				echo "<a href = 'list_books.php'>Back to List</a>";
-				echo "<a href = 'logout.php'>Log Out</a>";
+				$host  = $_SERVER['HTTP_HOST'];
+				$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+				$extra1 = 'list_books.php';
+				$extra2 = 'logout.php';
+				echo "<a href = 'http://$host$uri/$extra1'>Back to List</a><br>";
+				echo "<a href = 'http://$host$uri/$extra2'>Log Out</a>";
 				echo "</body>";
 				echo "</html>";
 			}
@@ -50,7 +57,10 @@
 	{
 		if (session_destroy())
 		{
-			header ("location: index.php");
+			$host  = $_SERVER['HTTP_HOST'];
+			$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+			$extra = 'index.php';
+			header ("Location: http://$host$uri/$extra");
 		}
 	}
 ?>
